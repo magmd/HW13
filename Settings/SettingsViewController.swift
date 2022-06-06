@@ -35,7 +35,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }()
 
     private lazy var settingsTableView: UITableView = {
-        let table = UITableView(frame: CGRect.zero, style: .insetGrouped)
+        let table = UITableView(frame: view.bounds, style: .insetGrouped)
         table.sectionFooterHeight = Metric.sectionFooterHeight
 
         return table
@@ -54,11 +54,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     private func setupLayout() {
-        settingsTableView.translatesAutoresizingMaskIntoConstraints = false
-        settingsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        settingsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        settingsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        settingsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        settingsTableView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }
 
     private func setupView() {
