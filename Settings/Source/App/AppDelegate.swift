@@ -9,7 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
 
-        let settingsViewController = SettingsViewController()
+        let settingsViewController = SettingsController()
         let navController = UINavigationController(rootViewController: settingsViewController)
 
         window.rootViewController = navController
