@@ -2,27 +2,27 @@ import UIKit
 
 class SettingsCustomTableViewCell: UITableViewCell {
 
-    let iconBackgroundView: UIView = {
+    private let iconBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5
 
         return view
     }()
 
-    let cellPrimaryText: UILabel = {
+    private let cellPrimaryText: UILabel = {
         let cellText = UILabel()
         cellText.font = .systemFont(ofSize: 17)
 
         return cellText
     }()
 
-    let cellPrimaryTextView: UIView = {
+    private let cellPrimaryTextView: UIView = {
         let view = UIView()
 
         return view
     }()
 
-    let cellSecondaryText: UILabel = {
+    private let cellSecondaryText: UILabel = {
         let cellText = UILabel()
         cellText.font = .systemFont(ofSize: 16)
         cellText.textColor = .gray
@@ -30,19 +30,19 @@ class SettingsCustomTableViewCell: UITableViewCell {
         return cellText
     }()
 
-    let cellSecondaryTextView: UIView = {
+    private let cellSecondaryTextView: UIView = {
         let view = UIView()
 
         return view
     }()
 
-    let icon: UIImageView = {
+    private let icon: UIImageView = {
         let imageView = UIImageView()
 
         return imageView
     }()
 
-    let badgeButton: UIButton = {
+    private let badgeButton: UIButton = {
         let btn = UIButton()
         btn.backgroundColor = .red
 
@@ -57,40 +57,44 @@ class SettingsCustomTableViewCell: UITableViewCell {
         return stackView
     }()
 
-    var settingsCell: SettingsViewController.SettingCellType? {
-        didSet {
-            guard let settingsItem = settingsCell else { return }
+    private var isCellToggle: Bool = false
 
-            cellPrimaryText.text = settingsItem.title
+    private var cellBadgeCount: Int = 0
 
-            cellSecondaryText.text = settingsItem.detailedText ?? ""
+    public func configure(with cell: Settings.SettingCellType) {
+        cellPrimaryText.text = cell.title
 
-            let image = UIImage(systemName: settingsItem.iconName) ?? UIImage(named: settingsItem.iconName)
-            icon.image = image
-            icon.tintColor = .white
-            icon.contentMode = .scaleAspectFit
+        cellSecondaryText.text = cell.detailedText ?? ""
 
-            iconBackgroundView.backgroundColor = settingsItem.backgroundColor
+        isCellToggle = cell.isToggle ?? false
 
-            if (settingsItem.badgeCount ?? 0) > 0 {
-                badgeButton.setTitle(String(settingsItem.badgeCount ?? 1), for: .normal)
-                badgeButton.isHidden = false
-                badgeButton.isEnabled = false
+        cellBadgeCount = cell.badgeCount ?? 0
 
-                cellSecondaryTextView.addSubview(badgeButton)
+        let image = UIImage(systemName: cell.iconName) ?? UIImage(named: cell.iconName)
+        icon.image = image
+        icon.tintColor = .white
+        icon.contentMode = .scaleAspectFit
 
-                badgeButton.translatesAutoresizingMaskIntoConstraints = false
-                badgeButton.centerYAnchor.constraint(equalTo: cellSecondaryTextView.centerYAnchor).isActive = true
-                badgeButton.trailingAnchor.constraint(equalTo: cellSecondaryTextView.trailingAnchor, constant: -10).isActive = true
-                badgeButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
-                badgeButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        iconBackgroundView.backgroundColor = cell.backgroundColor
 
-                badgeButton.layer.cornerRadius = 12.5
-            }
+        if cellBadgeCount > 0 {
+            badgeButton.setTitle(String(cellBadgeCount), for: .normal)
+            badgeButton.isHidden = false
+            badgeButton.isEnabled = false
 
-            if settingsItem.isToggle ?? false {
-                accessoryView = UISwitch()
-            }
+            cellSecondaryTextView.addSubview(badgeButton)
+
+            badgeButton.translatesAutoresizingMaskIntoConstraints = false
+            badgeButton.centerYAnchor.constraint(equalTo: cellSecondaryTextView.centerYAnchor).isActive = true
+            badgeButton.trailingAnchor.constraint(equalTo: cellSecondaryTextView.trailingAnchor, constant: -10).isActive = true
+            badgeButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
+            badgeButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+
+            badgeButton.layer.cornerRadius = 12.5
+        }
+
+        if isCellToggle {
+            accessoryView = UISwitch()
         }
     }
 
@@ -157,11 +161,12 @@ class SettingsCustomTableViewCell: UITableViewCell {
         super.prepareForReuse()
 
         accessoryType = .disclosureIndicator
-        if settingsCell?.isToggle ?? false {
+
+        if isCellToggle {
             accessoryView = .none
         }
 
-        if (settingsCell?.badgeCount ?? 0) > 0 {
+        if cellBadgeCount > 0 {
             badgeButton.isHidden = true
         }
     }
